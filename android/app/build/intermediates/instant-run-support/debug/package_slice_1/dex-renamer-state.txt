@@ -1,0 +1,4 @@
+#Fri May 11 23:30:55 CDT 2018
+base.0=C\:\\Users\\Jorge\\Documents\\CORDOVA\\Proyectos\\ProyectPlugins\\pruebapl\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\58
+renamed.0=classes.dex
+file.0=C\:\\Users\\Jorge\\Documents\\CORDOVA\\Proyectos\\ProyectPlugins\\pruebapl\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\58\\classes.dex

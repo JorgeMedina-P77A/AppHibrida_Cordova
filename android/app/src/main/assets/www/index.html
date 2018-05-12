@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+    <head>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Ejemplo Plugins</title>
+
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script type="text/javascript" charset="utf-8">
+
+            var pictureSource;   // Fuente de la imagen
+            var destinationType; // Formato del valor devuelto
+
+            document.addEventListener("deviceready",onDeviceReady,false);
+
+            // Dispostivo listo
+            function onDeviceReady() {
+                
+              // Obtener camara
+              pictureSource=navigator.camera.PictureSourceType;
+              destinationType=navigator.camera.DestinationType;
+            
+              // Obtener estado de la baterria
+              window.addEventListener("batterystatus", onBatteryStatus, false);
+
+            }
+
+            // Foto tomada de camara
+            function onPhotoDataSuccess(imageData) {
+              
+              var smallImage = document.getElementById('smallImage');
+              smallImage.style.display = 'block';
+              smallImage.src = "data:image/jpeg;base64," + imageData;
+            
+            }
+
+            // Foto tomada de galeria
+            function onPhotoURISuccess(imageURI) {
+              
+              var largeImage = document.getElementById('largeImage');
+              largeImage.style.display = 'block';
+              largeImage.src = imageURI;
+
+            }
+
+            // Boton para captura de foto
+            function capturePhoto() {
+
+              // Take picture using device camera and retrieve image as base64-encoded string
+              navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
+                destinationType: destinationType.DATA_URL });
+
+            }
+
+            // Boton para captura de foto editada
+            function capturePhotoEdit() {
+              
+              // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
+              navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+                destinationType: destinationType.DATA_URL });
+            
+            }
+
+            // Boton para eleccion de foto de galeria
+            function getPhoto(source) {
+
+              // Retrieve image file location from specified source
+              navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50,
+                destinationType: destinationType.FILE_URI,
+                sourceType: source });
+
+            }
+
+
+
+
+            // Obtener info bateria
+            function onBatteryStatus(info) {
+              
+              // Imprime en etiqueta info de la bateria
+              console.log("Level: " + info.level + " isPlugged: " + info.isPlugged);
+
+              var checa = "";
+              if(info.isPlugged==true){
+                checa="SI";
+              }else{
+                checa="NO";
+              }
+
+              document.getElementById("monitor").innerHTML = "Cargando: " + checa;
+              document.getElementById("slider-2").value = info.level;
+              $("#slider-2").val(info.level).slider("refresh");
+
+            }
+
+
+
+
+            // Pruebas de notificaciones
+
+            // Dialogo
+            function dialogAlert() {
+              
+              var message = "Solo dialogo";
+              var title = "DIALOGO ALERTA";
+              var buttonName = "Cerrar";
+              navigator.notification.alert(message, alertCallback, title, buttonName);
+               
+              function alertCallback() {
+                console.log("Alert is Dismissed!");
+              }
+            
+            }
+
+            // Dialogo de confirmacion
+            function dialogConfirm() {
+               
+              var message = "Dialogo de confirmacion y opciones";
+              var title = "CONFIRMACION";
+              var buttonLabels = "SI,NO,TAL VEZ";
+              navigator.notification.confirm(message, confirmCallback, title, buttonLabels);
+
+              function confirmCallback(buttonIndex) {
+                console.log("You clicked " + buttonIndex + " button!");
+              }
+              
+            }
+
+            // Dialogo con entrada
+            function dialogPrompt() {
+
+              var message = "Dialogo de ingreso de datos";
+              var title = "ENTRADA DATOS"; 
+              var buttonLabels = ["YES","NO"];
+              var defaultText = "Texto de ejemplo"
+              navigator.notification.prompt(message, promptCallback, title, buttonLabels, defaultText);
+
+              function promptCallback(result) {
+                console.log("You clicked " + result.buttonIndex + " button! \n" + "You entered " + result.input1);
+              }
+              
+            }
+
+            // Dialogo de tono
+            function dialogBeep() {
+               
+              var times = 1;
+              navigator.notification.beep(times);
+            
+            }
+
+
+
+
+
+            // Mensaje de falla
+            function onFail(message) {
+              alert('Failed because: ' + message);
+            }
+
+        </script>
+
+        <link rel="stylesheet" href="js/jQueryMobile/jquery.mobile-1.4.5.min.css">
+        <script src="js/jquery-1.11.1.min.js"></script>
+        <script src="js/jQueryMobile/jquery.mobile-1.4.5.min.js"></script>
+
+    </head>
+
+    <body>
+
+      <div data-role="page" id="page1">
+        
+        <div data-role="header">
+          <h1>Cordova - Prueba Plugins JQueryMobile</h1>
+        </div>
+        
+        <div role="main" class="ui-content">
+            
+          <div data-role="tabs">
+              
+            <div data-role="navbar">
+              <ul>
+                <li><a href="#fragment-1" class="ui-btn-active">Bateria</a></li>
+                <li><a href="#fragment-2">Dialogos</a></li>
+                <li><a href="#fragment-3">Camara</a></li>
+                </ul>
+            </div>
+
+            <div id="fragment-1">
+                
+              <h1>Estado de la bateria: </h1>
+              <br>
+
+              <div style="text-align:center;">
+                
+                <img style="width:200px;height:200px;" src="img/logo.png" />
+                <h3>Nivel de la bateria:</h3>
+                <input type="range" name="slider-2" id="slider-2" data-highlight="true" min="0" max="100" value="100">
+                <h3 id="monitor">MONITOR</h3>
+              
+              </div>
+
+            </div>
+
+            <div id="fragment-2">
+                
+              <h3>Pruebas de dialogos:</h3>
+              <button onclick="dialogAlert();">Dialogo</button>
+              <button onclick="dialogConfirm();">Confirmacion</button>
+              <button onclick="dialogPrompt();">Entrada texto</button>
+              <button onclick="dialogBeep();">Tono</button>
+              
+            </div>
+
+            <div id="fragment-3">
+                
+              <h3>Control de camara:</h3>
+              <button onclick="capturePhoto();">Tomar foto</button>
+              <button onclick="capturePhotoEdit();">Tomar foto editada</button>
+              <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">Tomar foto de galeria</button>
+                
+              <br>
+              <div style="text-align:center;">
+                
+                <h4>Imagen de camara:</h4>       
+                <img style="width:300px;height:300px;" id="smallImage" src="img/logo.png" />
+                <br>
+                <h4>Imagen de galeria:</h4>
+                <img style="width:300px;height:300px;" id="largeImage" src="img/logo.png" />
+              
+              </div>
+
+            </div>
+            
+          </div>
+        
+        </div>
+      
+      </div>
+
+    </body>
+
+</html>
